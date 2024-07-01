@@ -33,8 +33,8 @@ local utf8 = {
 local xCP = LibStub and LibStub("xCombatParser-1.0", true)
 if not xCP then print("Something went wrong when xCT+ tried to load. Please reinstall and inform the author.") end
 
-local L_AUTOATTACK = GetSpellInfo(6603)
-local L_KILLCOMMAND =  GetSpellInfo(34026)
+local L_AUTOATTACK = C_Spell.GetSpellName(6603)
+local L_KILLCOMMAND =  C_Spell.GetSpellName(34026)
 
 --[=====================================================[
  Holds cached spells, buffs, and debuffs
@@ -586,7 +586,7 @@ function x:GetSpellTextureFormatted( spellID, message, iconSize, showInvisibleIc
   elseif type(spellID) == 'string' then
     icon = spellID
   else
-    icon = GetSpellTexture( addon.merge2h[spellID] or spellID ) or x.BLANK_ICON
+    icon = C_Spell.GetSpellTexture( addon.merge2h[spellID] or spellID ) or x.BLANK_ICON
   end
 
   if iconSize < 1 then
@@ -744,7 +744,7 @@ function x:QuickClassFrameUpdate()
 end
 
 --[=====================================================[
- Looted Item - Latency Update Adpation
+ Looted Item - Latency Update Adaption
 --]=====================================================]
 local function LootFrame_OnUpdate(self, elapsed)
   local removeItems = { }
@@ -753,7 +753,7 @@ local function LootFrame_OnUpdate(self, elapsed)
 
     -- Time to wait before showing a looted item
     if item.t > 0.5 then
-      x:AddMessage("loot", sformat(item.message, sformat(format_lewtz_total, GetItemCount(item.id))), {item.r, item.g, item.b})
+      x:AddMessage("loot", sformat(item.message, sformat(format_lewtz_total, C_Item.GetItemCount(item.id))), {item.r, item.g, item.b})
       removeItems[i] = true
     end
   end
@@ -960,7 +960,7 @@ x.events = {
         local crafted, looted, pushed = (preMessage == format_crafted), (preMessage == format_looted), (preMessage == format_pushed)
 
         -- Item Quality, See "GetAuctionItemClasses()" For Type and Subtype, Item Icon Texture Location
-        local itemQuality, _, _, itemType, itemSubtype, _, _, itemTexture = select(3, GetItemInfo(linkID))
+        local itemQuality, _, _, itemType, itemSubtype, _, _, itemTexture = select(3, C_Item.GetItemInfo(linkID))
 
         -- Item White-List Filter
         local listed = x.db.profile.spells.items[itemType] and (x.db.profile.spells.items[itemType][itemSubtype] == true)
@@ -1060,9 +1060,9 @@ x.events = {
       -- TODO: Add a minimum amount of money
 
       if ShowColorBlindMoney() then
-        o = o..(g and g.." G " or "")..(s and s.." S " or "")..(c and c.." C " or "")
+        o = o .. (g and g .. " G " or "") .. (s and s .. " S " or "") .. (c and c .. " C " or "")
       else
-        o = o..GetCoinTextureString(money).." "
+        o = o .. C_CurrencyInfo.GetCoinTextureString(money) .. " "
       end
 
       -- This only works on english clients :\
@@ -1073,7 +1073,7 @@ x.events = {
 
   ["SPELL_ACTIVATION_OVERLAY_GLOW_SHOW"] = function(spellID)
       if spellID == 32379 then  -- Shadow Word: Death
-        local name = GetSpellInfo(spellID)
+        local name = C_Spell.GetSpellName(spellID)
         --x:AddMessage("procs", name, "spellProc")
       end
     end,
